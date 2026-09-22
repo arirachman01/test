@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { createObserveModule } from '@nestjs/observe';
-import { FrameTemplatesModule } from './frame-templates/frame-templates.module';
+// import { FrameTemplatesModule } from './frame-templates/frame-templates.module';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -17,7 +17,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    FrameTemplatesModule,
+    // FrameTemplatesModule,
   ],
 })
 export class AppModule {}
