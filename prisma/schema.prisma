@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+enum RoleType {
+  ADMIN
+  USER
+}
+
+enum PermissionAction {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String
+  password  String
+
+  roles    RoleType  @default(USER)
+  setting   WebsiteSetting?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+
+// ==========================================
+// LANDING PHOTO
+// ==========================================
+
+model LandingPhoto {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  url       String
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+
+  settingid Int?
+  setting WebsiteSetting? @relation(fields: [settingid], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("landing_photos")
+}
+
+
+// ==========================================
+// FRAME TEMPLATE
+// ==========================================
+
+model FrameTemplate {
+  id        Int      @id @default(autoincrement())
+  name      String
+  category  String?
+  filename  String
+  url       String
+  isActive  Boolean  @default(true)
+  
+  settingid Int?
+  setting   WebsiteSetting? @relation(fields: [settingid], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("frame_templates")
+}
+
+
+// ==========================================
+// PHOTO RESULT
+// ==========================================
+model PhotoSession {
+  id        Int      @id @default(autoincrement())
+  sessionId String   @unique
+
+  results   PhotoResult[]
+
+  settingid Int?
+  setting   WebsiteSetting? @relation(fields: [settingid], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("photo_sessions")
+}
+
+
+model PhotoResult {
+  id        Int        @id @default(autoincrement())
+  filename  String
+  url       String
+
+  // Relasi ke session
+  sessionId Int?
+  session   PhotoSession? @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+
+  createdAt DateTime @default(now())
+
+  @@index([sessionId])
+  @@map("photo_results")
+}
+
+
+// ==========================================
+// WEBSITE SETTINGS
+// ==========================================
+
+model WebsiteSetting {
+  id     Int @id @default(autoincrement())
+
+  userId Int  @unique
+  user   User @relation(fields: [userId], references: [id],  onDelete: Cascade )
+
+  // =========================
+  // WEBSITE
+  // =========================
+
+  websiteName        String  @default("Bingkai")
+  websiteDescription String?
+  tagline            String?
+  logoUrl            String?
+  faviconUrl         String?
+
+  frame              FrameTemplate[]
+  Landing            LandingPhoto[]
+  PhotoSession       PhotoSession[]
+
+  // =========================
+  // THEME
+  // =========================
+
+  primaryColor     String @default("#B89B5E")
+  secondaryColor   String @default("#1E1E1E")
+  backgroundColor  String @default("#F5F0E8")
+  surfaceColor     String @default("#FFFFFF")
+  textColor        String @default("#222222")
+  accentColor      String @default("#D4AF6A")
+
+  // =========================
+  // PHOTO BOOTH
+  // =========================
+
+  photoPrice      Int     @default(25000)
+  photoCount      Int     @default(6)
+  countdown       Int     @default(5)
+  maxTime         Int     @default(120)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("website_settings")                        
+}  
