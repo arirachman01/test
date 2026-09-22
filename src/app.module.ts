@@ -18,6 +18,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
       isGlobal: true,
     }),
     // FrameTemplatesModule,
+    //,,
   ],
 })
 export class AppModule {}
